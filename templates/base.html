@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="static/bootstrap.min.css" rel="stylesheet" media="screen">
+  </head>
+  <body>
+  <center>
+
+    <div class="container">
+
+      <!-- child template -->
+      {% block content %}
+      {% endblock %}
+      </br>
+
+      <!-- errors -->
+      {% if error %}
+        <p class="error"><strong>Error:</strong> {{ error }}</p>
+        </br>
+      {% endif %}
+
+      <!-- messages -->
+      </br>
+      </br>
+      </br>
+      </br>
+      </br>
+      </br>
+      </br>
+      {% for message in get_flashed_messages() %}
+        {{ message }}
+        </br>
+      {% endfor %}
+    </div>
+  </center>
+  </body>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"> </script>
+  <script type="text/javascript" src="/static/bootstrap.min.js"></script>
+</html>

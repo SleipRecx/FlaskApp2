@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<title>login</title>
+
+ <h1>{{buttonValue}}</h1>
+      </br>
+      <form action="" method="post" id="loginForm">
+        <input type="text" placeholder="Username" name="username" value="{{
+          request.form.username }}">
+         <input type="password" placeholder="Password" name="password" value="{{
+          request.form.password }}">
+        <input class="btn btn-default" form = "loginForm"type="submit" value={{ buttonValue }}>
+      </form>
+       </br>
+       {% if buttonValue!="Register" %}
+       <p>Not a member? Register now</p>
+        <form name="register" action ="/register">
+        <input class="btn btn-default" type="submit" value="Register">
+        </form>
+        {% endif %}        
+{% endblock %}

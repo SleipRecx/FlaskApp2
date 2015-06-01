@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<title>Home</title>
+<h1>Welcome To My Homepage</h1>
+<p>This is the main site</p>
+<a href="/about">About</a>
+</br>
+<a href="/logout">Logout</a>
+</br>
+
+<h3>Posts:</h3>
+{% for post in posts %}
+  <strong>Title:</strong> {{ post.title }} <br>
+  <strong>Post:</strong> {{ post.description }} <br>
+<br>
+{% endfor %}
+{% endblock %}
