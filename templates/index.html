@@ -17,5 +17,16 @@
   <strong>Title:</strong> {{ post.title }} <br>
   <strong>Post:</strong> {{ post.description }} <br>
 <br>
+
+
 {% endfor %}
+<form action="/post" method="post" id="postForm">
+        <input type="text" placeholder="title" name="title" value="{{
+          request.form.title }}">
+         <input type="text" placeholder="description" name="description" value="{{
+          request.form.description }}">
+        </br>
+		</br>
+        <input class="btn btn-default" form = "postForm" type="submit" value="Post">
+      </form>
 {% endblock %}

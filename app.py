@@ -89,6 +89,18 @@ def homepage():
 	return render_template("index.html",title=title,posts=posts,paragraph=paragraph)
 
 
+@app.route('/post', methods = ['GET', 'POST'])
+@login_required
+def post():
+	if request.method=='POST':
+		title = request.form['title'].rstrip()
+		description = request.form['description'].rstrip()
+		from models import BlogPost
+		db.session.add(BlogPost(title,description))
+		db.session.commit()
+		print(title)
+	return redirect(url_for('homepage'))
+
 
 @app.route('/about')
 @login_required
