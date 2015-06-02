@@ -13,6 +13,7 @@ import os
 app.config.from_object(os.environ['APP_SETTINGS'])
 print os.environ['APP_SETTINGS']
 
+
 #create the SQLAlchemy object
 db = SQLAlchemy(app)
 from models import *
