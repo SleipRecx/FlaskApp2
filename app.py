@@ -95,7 +95,6 @@ def homepage():
 def delete_all():
 	db.create_all()
 	db.session.query(BlogPost).delete()
-	db.session.add(BlogPost("well","i am well."))
 	db.session.commit()
 
 	return redirect(url_for('homepage'))
