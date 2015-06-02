@@ -86,8 +86,15 @@ def homepage():
 	title="Welcome To My HomePage"
 	paragraph="This is the main site"
 	posts=db.session.query(BlogPost).all()
+	posts=reversed(posts)
 	return render_template("index.html",title=title,posts=posts,paragraph=paragraph)
 
+
+@app.route('/deleteAll')
+@login_required
+def delete_all():
+	db.session.query(BlogPost).delete()
+	return redirect(url_for('homepage'))
 
 @app.route('/post', methods = ['GET', 'POST'])
 @login_required
@@ -98,7 +105,6 @@ def post():
 		from models import BlogPost
 		db.session.add(BlogPost(title,description))
 		db.session.commit()
-		print(title)
 	return redirect(url_for('homepage'))
 
 

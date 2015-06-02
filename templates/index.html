@@ -1,32 +1,35 @@
 {% extends "base.html" %}
 {% block content %}
 <title>Home</title>
-<h1>Welcome To My Homepage</h1>
-<p>This is the main site</p>
-<a href="/about">About</a>
-</br>
-<a href="/logout">Logout</a>
-</br>
-</br>
-</br>
-</br>
+<h1>Welcome To The Wall Of Posts</h1>
+
+
 </br>
 
+
+<div id="logoutButton">
+  <a href="/logout" class="btn btn-warning"> Logout</a>
+</div>
+
+<form action="/post" method="post" id="postForm">
+        <input type="text" placeholder="               Title" name="title" value="{{
+          request.form.title }}">
+         <input type="text" placeholder="         Description" name="description" value="{{
+          request.form.description }}">
+        </br>
+    </br>
+        <input class="btn btn-success" form = "postForm" type="submit" value="New Post">
+        <a href="/deleteAll" class="btn btn-danger"> Reset Wall</a>
+      </form>
 <h3>Posts:</h3>
 {% for post in posts %}
   <strong>Title:</strong> {{ post.title }} <br>
   <strong>Post:</strong> {{ post.description }} <br>
 <br>
-
-
 {% endfor %}
-<form action="/post" method="post" id="postForm">
-        <input type="text" placeholder="title" name="title" value="{{
-          request.form.title }}">
-         <input type="text" placeholder="description" name="description" value="{{
-          request.form.description }}">
-        </br>
-		</br>
-        <input class="btn btn-default" form = "postForm" type="submit" value="Post">
-      </form>
+
+
+
+
+
 {% endblock %}
