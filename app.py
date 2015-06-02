@@ -1,16 +1,34 @@
+# import's
 from flask import Flask, render_template,url_for,redirect, request, session, flash, g
 from functools import wraps
-import sqlite3
+from flask.ext.sqlalchemy import SQLAlchemy 
+from config import *
 
+# create the application object
 app = Flask(__name__)
-app.secret_key="secret"
-
-##database
-app.database="saple.db"
 
 
-def connect_db():
-	return sqlite3.connect(app.database)
+# config's for the app
+import os
+app.config.from_object(os.environ['APP_SETTINGS'])
+print os.environ['APP_SETTINGS']
+
+#create the SQLAlchemy object
+db = SQLAlchemy(app)
+from models import *
+
+
+# methods used for website behavouir
+def logout_required(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if not 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash('You are already logged in')
+            return redirect(url_for('homepage'))
+    return wrap
+
 
 def login_required(f):
     @wraps(f)
@@ -22,71 +40,7 @@ def login_required(f):
             return redirect(url_for('login'))
     return wrap
 
-@app.route('/')
-@login_required
-def homepage():
-	posts=[]
-	try:
-		title="Welcome To My HomePage"
-		paragraph="This is the main site"
-		pageType="main"
-		#fetching data from database and placing it in a dictionary
-		g.db=connect_db()
-		data = g.db.execute('select * from posts')
-		posts_dict={}
-		for item in data.fetchall():
-			posts_dict["title"]=item[0]
-			posts_dict["description"]=item[1]
-			posts.append(posts_dict)
-			posts_dict={}
-		g.db.close()
-	except sqlite3.OperationalError:
-		flash("You have noe database")
-	return render_template("index.html",title=title,posts=posts,paragraph=paragraph,pageType=pageType)
 
-
-@app.route('/about')
-def aboutpage():
-	return render_template("about.html")
-
-@app.route('/login', methods = ['GET', 'POST'])
-def login():
-	buttonValue="Login"
-	error=None
-	if request.method=='POST':
-		username = request.form['username'].rstrip()
-		password= request.form['password'].rstrip()
-		if(isValidUsernameAndPassword(username,password)):
-			session['logged_in']=True
-			flash('You are now logged in')
-			return redirect(url_for('homepage'))
-		else:
-			error = "invalid username or password"
-	return render_template('login.html',buttonValue=buttonValue, error=error)
-
-@app.route('/logout')
-@login_required
-def logout():
-	session.pop("logged_in",None)
-	flash("You are now logged out")
-	return redirect(url_for('login'))
-
-@app.route('/register', methods = ['GET', 'POST'])
-def register():
-	buttonValue="Register"
-	error=None
-	if request.method=="POST":
-		username = request.form['username'].rstrip()
-		password= request.form['password'].rstrip()
-		if(containsUsername(username)==False):
-			registerNewUser(username,password)
-			return redirect(url_for('login'))
-		else:
-			error="That username is already taken"
-	return render_template('login.html', error=error,buttonValue=buttonValue)
-
-
-## Methods used for website behavouir
 def registerNewUser(username,password):
 	txt_file=open("users.txt",'a')
 	txt_file.write(username+","+password+"\n")
@@ -123,6 +77,71 @@ def isValidUsernameAndPassword(username,password):
 	return False
 
 
+
+# routing for different paths
+@app.route('/')
+@login_required
+def homepage():
+	title="Welcome To My HomePage"
+	paragraph="This is the main site"
+	posts=db.session.query(BlogPost).all()
+	return render_template("index.html",title=title,posts=posts,paragraph=paragraph)
+
+
+
+@app.route('/about')
+@login_required
+def aboutpage():
+	return render_template("about.html")
+
+
+
+@app.route('/login', methods = ['GET', 'POST'])
+@logout_required
+def login():
+	buttonValue="Login"
+	error=None
+	if request.method=='POST':
+		username = request.form['username'].rstrip()
+		password= request.form['password'].rstrip()
+		if(isValidUsernameAndPassword(username,password)):
+			session['logged_in']=True
+			flash('You where just logged in')
+			return redirect(url_for('homepage'))
+		else:
+			error = "invalid username or password"
+	return render_template('login.html',buttonValue=buttonValue, error=error)
+
+
+
+@app.route('/logout')
+@login_required
+def logout():
+	session.pop("logged_in",None)
+	flash("You are now logged out")
+	return redirect(url_for('login'))
+
+
+
+@app.route('/register', methods = ['GET', 'POST'])
+def register():
+	buttonValue="Register"
+	error=None
+	if request.method=="POST":
+		username = request.form['username'].rstrip()
+		password= request.form['password'].rstrip()
+		if(containsUsername(username)==False):
+			registerNewUser(username,password)
+			flash("Registration succeeded")
+			return redirect(url_for('login'))
+		else:
+			error="That username is already taken"
+	return render_template('login.html', error=error,buttonValue=buttonValue)
+
+
+
+
+# run the application
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
 
