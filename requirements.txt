@@ -7,3 +7,4 @@ Werkzeug==0.10.4
 gunicorn==19.3.0
 itsdangerous==0.24
 virtualenv==13.0.1
+psycopg2==2.5.3
