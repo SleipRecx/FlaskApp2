@@ -48,33 +48,39 @@ def registerNewUser(username,password):
 	txt_file.close()
 
 def containsUsername(username):
-	usernameList=[]
-	txt_file = open('users.txt','r')
-	lines =txt_file.readlines()
-	txt_file.close()
-	for line in lines:
-		if(any(c.isalpha() for c in line)):
-			usernameList.append(line.split(",")[0].rstrip())
-	for thisUsername in usernameList:
-		if (thisUsername==username):
-			return True
+	for x in range(0,2):
+		txt_file = open('users.txt','r')
+		if x==1:
+			txt_file = open('admin.txt','r')
+		usernameList=[]
+		lines =txt_file.readlines()
+		txt_file.close()
+		for line in lines:
+			if(any(c.isalpha() for c in line)):
+				usernameList.append(line.split(",")[0].rstrip())
+		for thisUsername in usernameList:
+			if (thisUsername==username):
+				return True
 	return False
 
 def isValidUsernameAndPassword(username,password):
-	usernameList=[]
-	passwordList=[]
-	txt_file = open('users.txt','r')
-	lines =txt_file.readlines()
-	txt_file.close()
-	for line in lines:
-		if(any(c.isalpha() for c in line)):
-			usernameList.append(line.split(",")[0].rstrip())
-			passwordList.append(line.split(",")[1].rstrip())
-	for i in range(0,len(usernameList)):
-		if(usernameList[i]==username):
-			for j in range(0,len(passwordList)):
-				if(passwordList[j]==password and i==j):
-					return True
+	for x in range(0,2):
+		usernameList=[]
+		passwordList=[]
+		txt_file = open('users.txt','r')
+		if x == 1:
+			txt_file = open('admin.txt','r')
+		lines =txt_file.readlines()
+		txt_file.close()
+		for line in lines:
+			if(any(c.isalpha() for c in line)):
+				usernameList.append(line.split(",")[0].rstrip())
+				passwordList.append(line.split(",")[1].rstrip())
+		for i in range(0,len(usernameList)):
+			if(usernameList[i]==username):
+				for j in range(0,len(passwordList)):
+					if(passwordList[j]==password and i==j):
+						return True
 	return False
 
 
@@ -93,10 +99,12 @@ def homepage():
 @app.route('/deleteAll')
 @login_required
 def delete_all():
-	db.create_all()
-	db.session.query(BlogPost).delete()
-	db.session.commit()
-
+	if session['admin']==True:
+		db.create_all()
+		db.session.query(BlogPost).delete()
+		db.session.commit()
+	else:
+		flash("Only admin can delete wall")
 	return redirect(url_for('homepage'))
 
 @app.route('/post', methods = ['GET', 'POST'])
@@ -128,6 +136,10 @@ def login():
 		password= request.form['password'].rstrip()
 		if(isValidUsernameAndPassword(username,password)):
 			session['logged_in']=True
+			if(username=="admin"):
+				session['admin']=True
+			else:
+				session['admin']=False
 			flash('You where just logged in')
 			return redirect(url_for('homepage'))
 		else:
