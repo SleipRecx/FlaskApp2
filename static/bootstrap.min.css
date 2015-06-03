@@ -12,7 +12,11 @@
 }
 
 
-
+#message{
+  position: absolute;
+  right: 70px;
+  top: 23px;
+}
 #base_container{
 	background-color:#e6e6e6;
 	opacity:1;
@@ -34,6 +38,7 @@
 #loginInput{
 	margin: 10px;
 }
+
 
 
 
