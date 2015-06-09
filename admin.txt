@@ -1,2 +1,1 @@
 admin,admin
-nelly2,nelly2
