@@ -88,6 +88,13 @@ class FlaskTest(unittest.TestCase):
 		response = tester.post('/login', data = dict(username='admin', password='admin'), follow_redirects=True)
 		self.assertIn(b'i am good', response.data)
 
+	def test_only_admin_can_delete_wall(self):
+		tester = app.test_client(self)
+		response = tester.post('/login', data = dict(username='admin', password='admin'), follow_redirects=True)
+		response = tester.get('/deleteAll', content_type = 'html/text', follow_redirects=True)
+		self.assertIn(b'Wall deleted',response.data)
+
+
 
 # Help method
 def random_string(length):

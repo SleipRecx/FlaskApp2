@@ -8,7 +8,11 @@
 
 
 <div id="logoutButton">
-  <a href="/logout" class="btn btn-warning"> Logout</a>
+  <a href="/logout" <span class="glyphicon glyphicon-user"></span> Logout</a>
+  </br>
+  </br>
+
+  <p><b>Username:</b> {{username}}</p>
 </div>
 
 <form action="/post" method="post" id="postForm">
@@ -17,10 +21,12 @@
          <input type="text" placeholder="         Description" name="description" value="{{
           request.form.description }}">
         </br>
+
     </br>
         <input class="btn btn-success" form = "postForm" type="submit" value="New Post">
         <a href="/deleteAll" class="btn btn-danger"> Reset Wall</a>
       </form>
+       <p>{{ user_status }}</p>
 <h3>Posts:</h3>
 {% for post in posts %}
   <strong>Title:</strong> {{ post.title }} <br>
