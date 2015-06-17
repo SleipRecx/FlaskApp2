@@ -44,13 +44,6 @@ def login_required(f):
             return redirect(url_for('login'))
     return wrap
 
-def getUserStatus():
-	if session['admin']==True:
-		return "Admin User"
-	if session['admin']==False:
-		if 'logged_in' not in session:
-			return "Not Logged In "
-		return "Basic User"
 
 def registerNewUser(username,password,isAdmin):
 	if isAdmin == True:
@@ -100,6 +93,8 @@ def isValidUsernameAndPassword(username,password):
 			if key == username and value == password:
 				if x == ADMIN_INDEX:
 					session['admin']=True
+				else:
+					session['admin']=False
 				session['logged_in_as']=username
 				return True
 	return False
@@ -114,9 +109,8 @@ def homepage():
 	paragraph="This is the main site"
 	posts=db.session.query(BlogPost).all()
 	posts=reversed(posts)
-	status= getUserStatus()
 	logged_in_as = session['logged_in_as']
-	return render_template("index.html",posts=posts,status=status,username=logged_in_as)
+	return render_template("index.html",posts=posts,username=logged_in_as)
 
 
 @app.route('/deleteAll')
@@ -154,8 +148,6 @@ def aboutpage():
 @app.route('/login', methods = ['GET', 'POST'])
 @logout_required
 def login():
-	session['admin']=False
-	status= getUserStatus()
 	buttonValue="Login"
 	error=None
 	if request.method=='POST':
@@ -167,7 +159,7 @@ def login():
 			return redirect(url_for('homepage'))
 		else:
 			error = "invalid username or password"
-	return render_template('login.html',buttonValue=buttonValue, error=error,status=status)
+	return render_template('login.html',buttonValue=buttonValue, error=error)
 
 
 
