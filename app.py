@@ -95,7 +95,7 @@ def isValidUsernameAndPassword(username,password):
 					session['admin']=True
 				else:
 					session['admin']=False
-				session['logged_in_as']=username
+				session['username']=username
 				return True
 	return False
 
@@ -168,7 +168,7 @@ def login():
 def logout():
 	session.pop("logged_in",None)
 	session.pop("admin",False)
-	session.pop('logged_in_as',None)
+	session.pop('username',None)
 	flash("You are now logged out")
 	return redirect(url_for('login'))
 
