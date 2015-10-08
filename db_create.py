@@ -5,9 +5,7 @@ from models import BlogPost
 db.create_all()
 
 #insert
-db.session.add(BlogPost("good","i am good."))
-db.session.add(BlogPost("well","i am well."))
-db.session.add(BlogPost("postgres","we setup a local postgres"))
+db.session.add(BlogPost("First","first post"))
 
 
 #commit changes
