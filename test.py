@@ -5,6 +5,8 @@ import random
 class FlaskTest(unittest.TestCase):
 
 	# IMPORTANT all test methods must start with test_
+	
+
 
 	# test if flask app loads
 	def test_Index(self):
@@ -83,10 +85,7 @@ class FlaskTest(unittest.TestCase):
 		self.assertIn(b'You need to login to access', response.data)
 
 	# test that the post shows on the main page
-	def test_post_shows_up(self):
-		tester = app.test_client(self)
-		response = tester.post('/login', data = dict(username='admin', password='admin'), follow_redirects=True)
-		self.assertIn(b'i am good', response.data)
+	
 
 	def test_only_admin_can_delete_wall(self):
 		tester = app.test_client(self)

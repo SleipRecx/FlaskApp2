@@ -109,8 +109,8 @@ def homepage():
 	paragraph="This is the main site"
 	posts=db.session.query(BlogPost).all()
 	posts=reversed(posts)
-	logged_in_as = session['logged_in_as']
-	return render_template("index.html",posts=posts,username=logged_in_as)
+	current_username = session['username']
+	return render_template("index.html",posts=posts,username=current_username)
 
 
 @app.route('/deleteAll')
@@ -166,7 +166,7 @@ def login():
 @app.route('/logout')
 @login_required
 def logout():
-	session.pop("logged_in",None)
+	session.pop("logged_in",False)
 	session.pop("admin",False)
 	session.pop('username',None)
 	flash("You are now logged out")
@@ -186,7 +186,7 @@ def register():
 				isAdmin=True
 			else:
 				isAdmin=False
-		except Error:
+		except KeyError:
 			isAdmin=False
 		if(containsUsername(username)==False):
 			registerNewUser(username,password,isAdmin)

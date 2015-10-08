@@ -14,4 +14,3 @@ class BlogPost(db.Model):
 
 	def __repr__(self):
 		return '{}-{}'.format(self.title, self.description)
-
